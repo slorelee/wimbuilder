@@ -113,6 +113,7 @@ if exist X:\ (
 )
 
 rem PHRASE:mount WIM
+if "x%PB_BASE_INDEX%"=="x" set PB_BASE_INDEX=1
 if "x%PB_MNT_DIR%"=="x" call :NO_ENV_CONF PB_MNT_DIR
 if not exist "%PB_MNT_DIR%" call :PB_ERROR "Please make the mount dir %PB_MNT_DIR%"
 if not "x%PB_SRC_WIM%"=="x" (
