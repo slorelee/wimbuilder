@@ -158,9 +158,9 @@ pause
 set PROCESS_PROJECT=1
 call :PB_PROCESS .
 for /f "delims=" %%s in ('dir /b /ad .') do (
-  echo Apply-Pakage:%%s
-  pause
-  call :PB_PROCESS %%s
+  if not "x%%s"=="xX" (
+    call :PB_APPLY_PATCH %%s
+  )
 )
 
 echo.
@@ -173,6 +173,12 @@ pause
 goto :EOF
 
 rem =========================================================
+:PB_APPLY_PATCH
+echo Apply-Patch:%1
+pause
+call :PB_PROCESS "%~1"
+goto :EOF
+
 :PB_PROCESS
 if "x%~1"=="x" goto :EOF
 if not "%PROCESS_PROJECT%"=="1" goto :EOF
@@ -202,8 +208,8 @@ if exist "%~1\DEL_FILES.txt" (
 )
 
 rem PROCESS:add files
-call :techo "PROCESS:add files"
 if exist "%~1\X" (
+  call :techo "PROCESS:add files"
   xcopy /E /Q /H /K /Y "%~1\X\*" X:\
 )
 
