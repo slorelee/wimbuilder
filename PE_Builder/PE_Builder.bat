@@ -186,7 +186,7 @@ if exist "X:\[KEEP_ITEMS]" rd /s /q "X:\[KEEP_ITEMS]"
 for /f "delims=" %%f in ('cscript.exe //nologo %~dp0bin\KeepItemsName.vbs "%~1\KEEP_ITEMS.txt"') do (
   xcopy /Q /H /K /Y %%f 1>nul
 )
-for /f "delims=" %%f in (%~1\KEEP_ITEMS.txt) do (
+for /f "eol=; delims=" %%f in (%~1\KEEP_ITEMS.txt) do (
   rd /s /q "X:\%%~f"
   xcopy /E /Q /H /K /Y "X:\[KEEP_ITEMS]" "X:\%%~f"
   rd /s /q "X:\[KEEP_ITEMS]"

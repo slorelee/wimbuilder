@@ -16,7 +16,7 @@ set objFSO = CreateObject("Scripting.FileSystemObject")
 set objFile = objFSO.OpenTextFile(KeepFile, ForReading)
 Do Until objFile.AtEndOfStream
   message = objFile.ReadLine
-  if message <> "" Then
+  If message <> "" And Left(message, 1) <> ";" Then
      i = i + 1
      If i = 1 Then
        RootPath = message
