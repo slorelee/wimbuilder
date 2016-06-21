@@ -1,8 +1,12 @@
- If WSH.Arguments.Count = 0 Then WSH.Quit(0)
- If WSH.Arguments.Count = 1 Then
+'Copyleft 2006 by slore, everyone can use, edit, and redistribute those scripts
+'WITHOUT ANY LIMITATIONS
+
+If WSH.Arguments.Count = 0 Then WSH.Quit(0)
+If WSH.Arguments.Count = 1 Then
     WSH.Echo GetLocale()
     WSH.Quit(0)
 End If
+
 Set objI18nStrDic = CreateObject("scripting.dictionary")
 Set objI18nRegExpDic = CreateObject("scripting.dictionary")
 Class I18n

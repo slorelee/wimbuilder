@@ -1,4 +1,6 @@
 @echo off
+rem Copyleft 2006 by slore, everyone can use, edit, and redistribute those scripts
+rem WITHOUT ANY LIMITATIONS
 SETLOCAL ENABLEDELAYEDEXPANSION
 cd /d "%~dp0"
 title PE Builder(%cd%)
