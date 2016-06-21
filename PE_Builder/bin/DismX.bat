@@ -1,6 +1,5 @@
-ver|findstr " 10." >nul
-if not ERRORLEVEL 1 (
+if exist "%~dp0Dism10_x86\Dism.exe" (
+  "%~dp0Dism10_x86\Dism.exe" %*
+) else (
   Dism.exe %*
-  goto :EOF
 )
-"%~dp0Dism10_x86\Dism.exe" %*
