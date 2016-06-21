@@ -15,8 +15,13 @@ if not ERRORLEVEL 1 (
   )
 )
 
- if "%~1"=="PB_PROCESS" (
-  call :PB_PROCESS "%~2"
+ if "%~1"=="PB_APPLY_PACKAGE" (
+  call :PB_APPLY_PACKAGE "%~2"
+  goto :EOF
+)
+
+ if "%~1"=="PB_APPLY_PATCH" (
+  call :PB_APPLY_PATCH "%~2"
   goto :EOF
 )
 
@@ -176,8 +181,21 @@ pause
 goto :EOF
 
 rem =========================================================
+:PB_APPLY_PACKAGE
+if "x%~1"=="x" goto :EOF
+if not "%PROCESS_PROJECT%"=="1" goto :EOF
+echo APPLYING-PACKAGE:%1
+pause
+call :PB_PROCESS "%~1"
+for /f "delims=" %%s in ('dir /b /ad "%~1"') do (
+  if not "x%%s"=="xX" (
+    call :PB_APPLY_PATCH %%s
+  )
+)
+goto :EOF
+
 :PB_APPLY_PATCH
-echo Apply-Patch:%1
+echo APPLYING-PATCH:%1
 pause
 call :PB_PROCESS "%~1"
 goto :EOF
@@ -186,7 +204,18 @@ goto :EOF
 if "x%~1"=="x" goto :EOF
 if not "%PROCESS_PROJECT%"=="1" goto :EOF
 
+rem PROCESS:INIT
+if exist "%~1\INIT.bat" (
+  call "%~1\INIT.bat"
+)
+
 rem PROCESS:delete file
+set TMP_SKIP_FLAG=1
+if exist "%~1\KEEP_ITEMS.txt" set TMP_SKIP_FLAG=0
+if exist "%~1\DEL_DIRS.txt" set TMP_SKIP_FLAG=0
+if exist "%~1\DEL_FILES.txt" set TMP_SKIP_FLAG=0
+if %TMP_SKIP_FLAG% EQU 1 goto :DEAL_ADD_FILES
+
 call :techo "PROCESS:delete files"
 
 if not exist "%~1\KEEP_ITEMS.txt" goto :DEAL_DEL_DIRS
@@ -210,16 +239,34 @@ if exist "%~1\DEL_FILES.txt" (
   for /f "eol=; delims=" %%f in (%~1\DEL_FILES.txt) do del /q "X:\%%~f" 1>nul
 )
 
+:DEAL_ADD_FILES
 rem PROCESS:add files
+set TMP_SKIP_FLAG=1
+if exist "%~1\ADD_ITEMS.txt" set TMP_SKIP_FLAG=0
+if exist "%~1\X" set TMP_SKIP_FLAG=0
+if %TMP_SKIP_FLAG% EQU 1 goto :DEAL_REG_FILES
+
 if exist "%~1\X" (
   call :techo "PROCESS:add files"
   xcopy /E /Q /H /K /Y "%~1\X\*" X:\
 )
 
+:DEAL_REG_FILES
 rem PROCESS:import reg files
-call :techo "PROCESS:update registry"
+set TMP_SKIP_FLAG=1
+dir /b "%~1\*.reg" 1>nul 2>nul
+if not ERRORLEVEL 1 set TMP_SKIP_FLAG=0
+if %TMP_SKIP_FLAG% EQU 1 goto :DEAL_LAST
 
+call :techo "PROCESS:update registry"
 call ImportReg.bat "%~1"
+
+:DEAL_LAST
+rem PROCESS:LAST
+if exist "%~1\LAST.bat" (
+  call "%~1\LAST.bat"
+)
+
 goto :EOF
 
 rem =========================================================
