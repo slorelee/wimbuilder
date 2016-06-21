@@ -141,9 +141,10 @@ if not "%base_wim_mounted%"=="1" (
   call :CLEANUP
 )
 
-rem explorer.exe don't show X:\ when running with Administrators right
+rem NOTICE:explorer.exe don't show X:\ when running with Administrators right
 SUBST X: "%PB_MNT_DIR%\%BUILD_PROJECT%"
 echo.
+if "x%PB_SKIP_UFR%"=="x1" goto :PROJECT_BUILDING
 rem update files ACL Right
 call :techo "PHRASE:updating files' ACL rights"
 pause
