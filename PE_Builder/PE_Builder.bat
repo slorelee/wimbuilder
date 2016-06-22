@@ -121,10 +121,11 @@ if exist X:\ (
 
 rem PHRASE:mount WIM
 if "x%PB_BASE_INDEX%"=="x" set PB_BASE_INDEX=1
+if "x%PB_SRC_INDEX%"=="x" set PB_SRC_INDEX=1
 if "x%PB_MNT_DIR%"=="x" call :NO_ENV_CONF PB_MNT_DIR
 if not exist "%PB_MNT_DIR%" call :PB_ERROR "Please make the mount dir %PB_MNT_DIR%"
 if not "x%PB_SRC_WIM%"=="x" (
-  call WIM_Mounter.bat "%PB_SRC_WIM%" "%PB_MNT_DIR%\SOURCES" src_wim_mounted
+  call WIM_Mounter.bat "%PB_SRC_WIM%" %PB_SRC_INDEX% "%PB_MNT_DIR%\SOURCES" src_wim_mounted
   goto :CHECK_SRC_MOUNT
 )
 
@@ -142,7 +143,7 @@ if "x%PB_PE_WIM%"=="x" call :NO_ENV_CONF PB_PE_WIM
 call :MKPATH "%PB_PE_WIM%"
 call copy /y "%PB_BASE_WIM%" "%PB_PE_WIM%"
 
-call WIM_Mounter.bat "%PB_PE_WIM%" "%PB_MNT_DIR%\%BUILD_PROJECT%" base_wim_mounted
+call WIM_Mounter.bat "%PB_PE_WIM%" %PB_BASE_INDEX% "%PB_MNT_DIR%\%BUILD_PROJECT%" base_wim_mounted
 if not "%base_wim_mounted%"=="1" (
   call :techo "mount base wim file failed."
   call :CLEANUP
