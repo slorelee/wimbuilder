@@ -96,6 +96,7 @@ set PB_
 echo.
 
 if 1==0 (
+  rem set src_wim_mounted=1
   set base_wim_mounted=1
   goto :PROJECT_BUILDING
   call :CLEANUP
@@ -104,7 +105,7 @@ if 1==0 (
 )
 
 call :techo "PHRASE:Mount WIM image"
-pause
+if "x%PB_STRAIGHT_MODE%"=="x" pause
 
 rem check X: driver
 if exist X:\ (
@@ -115,7 +116,7 @@ if "%yTry%"=="y" SUBST X: /D
 if "%yTry%"=="Y" SUBST X: /D
 if exist X:\ (
   call :techo "X: is already in use, goto CLEANUP."
-  pause
+  if "x%PB_STRAIGHT_MODE%"=="x" pause
   call :CLEANUP
 )
 
@@ -155,7 +156,7 @@ echo.
 if "x%PB_SKIP_UFR%"=="x1" goto :PROJECT_BUILDING
 rem update files ACL Right
 call :techo "PHRASE:updating files' ACL rights"
-pause
+if "x%PB_STRAIGHT_MODE%"=="x" pause
 call :techo "Updating...(Please, be patient)"
 call TrustedInstallerRight.bat "%PB_MNT_DIR%\%BUILD_PROJECT%" 1>nul
 if not "%GetLastError%"=="0" call :CLEANUP
@@ -163,7 +164,7 @@ call :techo "Update files with Administrators' FULL ACL rights successfully."
 echo.
 :PROJECT_BUILDING
 call :techo "PHRASE:Going PE Building process(DEL, ADD, REG)"
-pause
+if "x%PB_STRAIGHT_MODE%"=="x" pause
 set PROCESS_PROJECT=1
 call :PB_PROCESS .
 for /f "delims=" %%s in ('dir /b /ad .') do (
@@ -172,21 +173,31 @@ for /f "delims=" %%s in ('dir /b /ad .') do (
   )
 )
 
+popd
+
 echo.
 call :techo "PHRASE:Commit modification and build the WIM"
-pause
+if "x%PB_STRAIGHT_MODE%"=="x" pause
 call :CLEANUP 0
 call WIM_Exporter.bat "%PB_PE_WIM%"
-if not "%GetLastError%"=="0" call :techo "Export build WIM failed."
-pause
+if not "%GetLastError%"=="0" goto :ERROR_EXPORT
+if "x%PB_STRAIGHT_MODE%"=="x" pause
+echo.
+call :techo "PHRASE:build bootable ISO file"
+call MakeBootISO.bat
 goto :EOF
+
+:ERROR_EXPORT
+ call :techo "Export build WIM failed."
+ pause
+ goto :EOF
 
 rem =========================================================
 :PB_APPLY_PACKAGE
 if "x%~1"=="x" goto :EOF
 if not "%PROCESS_PROJECT%"=="1" goto :EOF
 echo APPLYING-PACKAGE:%1
-pause
+if "x%PB_STRAIGHT_MODE%"=="x" pause
 call :PB_PROCESS "%~1"
 for /f "delims=" %%s in ('dir /b /ad "%~1"') do (
   if not "x%%s"=="xX" (
@@ -197,7 +208,7 @@ goto :EOF
 
 :PB_APPLY_PATCH
 echo APPLYING-PATCH:%1
-pause
+if "x%PB_STRAIGHT_MODE%"=="x" pause
 call :PB_PROCESS "%~1"
 goto :EOF
 

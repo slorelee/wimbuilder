@@ -24,6 +24,8 @@ t.s "PHRASE:Commit modification and build the WIM", _
     "工序:提交对WIM文件的修改,进行工程构建"
 t.s "Export build WIM failed.", _
     "导出构建WIM失败"
+t.s "PHRASE:build bootable ISO file", _
+    "工序:创建可引导ISO镜像"
 t.s "PROCESS:delete files", _
     "PROCESS:删除文件"
 t.s "PROCESS:add files", _
