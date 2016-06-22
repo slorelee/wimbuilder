@@ -247,8 +247,14 @@ if exist "%~1\ADD_ITEMS.txt" set TMP_SKIP_FLAG=0
 if exist "%~1\X" set TMP_SKIP_FLAG=0
 if %TMP_SKIP_FLAG% EQU 1 goto :DEAL_REG_FILES
 
+call :techo "PROCESS:add files"
+if not exist "%~1\ADD_ITEMS.txt" goto :DEAL_X_DIR
+for /f "delims=" %%f in ('cscript.exe //nologo %~dp0bin\AddItemsName.vbs "%~1\ADD_ITEMS.txt" "%PB_MNT_DIR%\SOURCES\"') do (
+  xcopy /Q /H /K /Y %%f 1>nul
+)
+
+:DEAL_X_DIR
 if exist "%~1\X" (
-  call :techo "PROCESS:add files"
   xcopy /E /Q /H /K /Y "%~1\X\*" X:\
 )
 
