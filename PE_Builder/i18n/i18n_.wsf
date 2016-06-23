@@ -1,5 +1,6 @@
 <job id="i18n">
   <script language="VBScript" src="i18n.vbs" />
+  <script language="VBScript" src="colormapping.vbs" />
   <script language="VBScript">
     Trans()
   </script>

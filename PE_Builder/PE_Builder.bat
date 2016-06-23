@@ -91,7 +91,8 @@ if exist config.ini (
   for /f "delims=" %%c in (config.ini) do call %%c
 )
 
-call :LOG "[%BUILD_PROJECT%] --- build information"
+rem ";" cann't be pass to CALL LABEL, so use a ":" for it
+call :CLOG 97:104m "[%BUILD_PROJECT%] --- build information"
 set PB_
 echo.
 
@@ -104,18 +105,18 @@ if 1==0 (
   exit 0
 )
 
-call :techo "PHRASE:Mount WIM image"
+call :cecho PHRASE "PHRASE:Mount WIM image"
 if "x%PB_STRAIGHT_MODE%"=="x" pause
 
 rem check X: driver
 if exist X:\ (
-  call :techo "X: is already use."
+  call :cecho WARN "X: is already use."
   call :setp yTry "Try SUBST X: /D?[y/n]:"
 )
 if "%yTry%"=="y" SUBST X: /D
 if "%yTry%"=="Y" SUBST X: /D
 if exist X:\ (
-  call :techo "X: is already in use, goto CLEANUP."
+  call :cecho ERROR "X: is already in use, goto CLEANUP."
   if "x%PB_STRAIGHT_MODE%"=="x" pause
   call :CLEANUP
 )
@@ -133,7 +134,7 @@ if not "x%PB_SRC_WIM%"=="x" (
 goto :BASE_MOUNT
 :CHECK_SRC_MOUNT
 if not "%src_wim_mounted%"=="1" (
-  call :techo "mount source wim file failed."
+  call :cecho ERROR "mount source wim file failed."
   call :CLEANUP
 )
 
@@ -146,7 +147,7 @@ call copy /y "%PB_BASE_WIM%" "%PB_PE_WIM%"
 
 call WIM_Mounter.bat "%PB_PE_WIM%" %PB_BASE_INDEX% "%PB_MNT_DIR%\%BUILD_PROJECT%" base_wim_mounted
 if not "%base_wim_mounted%"=="1" (
-  call :techo "mount base wim file failed."
+  call :cecho ERROR "mount base wim file failed."
   call :CLEANUP
 )
 
@@ -155,7 +156,7 @@ SUBST X: "%PB_MNT_DIR%\%BUILD_PROJECT%"
 echo.
 if "x%PB_SKIP_UFR%"=="x1" goto :PROJECT_BUILDING
 rem update files ACL Right
-call :techo "PHRASE:updating files' ACL rights"
+call :cecho PHRASE "PHRASE:updating files' ACL rights"
 if "x%PB_STRAIGHT_MODE%"=="x" pause
 call :techo "Updating...(Please, be patient)"
 call TrustedInstallerRight.bat "%PB_MNT_DIR%\%BUILD_PROJECT%" 1>nul
@@ -163,7 +164,7 @@ if not "%GetLastError%"=="0" call :CLEANUP
 call :techo "Update files with Administrators' FULL ACL rights successfully."
 echo.
 :PROJECT_BUILDING
-call :techo "PHRASE:Going PE Building process(DEL, ADD, REG)"
+call :cecho PHRASE "PHRASE:Going PE Building process(DEL, ADD, REG)"
 if "x%PB_STRAIGHT_MODE%"=="x" pause
 set PROCESS_PROJECT=1
 call :PB_PROCESS .
@@ -176,19 +177,19 @@ for /f "delims=" %%s in ('dir /b /ad .') do (
 popd
 
 echo.
-call :techo "PHRASE:Commit modification and build the WIM"
+call :cecho PHRASE "PHRASE:Commit modification and build the WIM"
 if "x%PB_STRAIGHT_MODE%"=="x" pause
 call :CLEANUP 0
 call WIM_Exporter.bat "%PB_PE_WIM%"
 if not "%GetLastError%"=="0" goto :ERROR_EXPORT
 echo.
-call :techo "PHRASE:build bootable ISO file"
+call :cecho PHRASE "PHRASE:build bootable ISO file"
 if "x%PB_STRAIGHT_MODE%"=="x" pause
 call MakeBootISO.bat
 goto :EOF
 
 :ERROR_EXPORT
-call :techo "Export build WIM failed."
+call :cecho ERROR "Export build WIM failed."
 pause
 goto :EOF
 
@@ -347,11 +348,11 @@ goto :EOF
 
 rem =========================================================
 :PB_ERROR
-call :LOG %*
+call :CLOG ERROR %*
 call :CLEANUP
 
 :NO_ENV_CONF
-call :LOG "Please specify the @s in config.ini" %1
+call :CLOG ERROR "Please specify the @s in config.ini" %1
 call :CLEANUP
 
 :CLEANUP

@@ -46,14 +46,17 @@ End Class
 Set t = New I18n
 
 Sub Trans()
-    Dim modestr, mode, colorstr, transstr, f, i
+    Dim modestr, mode, colorstr, transstr, f, i, pos
     f = 1
     modestr = WSH.Arguments(0)
     mode = "Echo"
+    colorstr = ""
     If InStr(1, modestr, "LOG") > 0 Then mode = "LOG"
-    If InStr(1, modestr, "CLR") > 1 Then
-       colorstr = WSH.Arguments(1)
-       f = f + 1
+    If InStr(1, modestr, "CLR") = 1 Then
+       colorstr = WSH.Arguments(0)
+       'f = f + 1
+      pos = InstrRev(colorstr, "_")
+       colorstr = CLR_Trans(Mid(colorstr, pos + 1))
     End If
     transstr = t.trans(WSH.Arguments(f))
     For i = f + 1 To WSH.Arguments.Count - 1
@@ -61,9 +64,9 @@ Sub Trans()
     Next
     Select Case mode
     Case "Echo"
-        WSH.Echo transstr
+        WSH.Echo colorstr & transstr
     Case "LOG"
-        WSH.Echo transstr
+        WSH.Echo colorstr & transstr
         WSH.Echo  log_prefix() & Left("INFO" & Space(10), 10) & transstr
     Case Else
          WSH.Echo transstr
