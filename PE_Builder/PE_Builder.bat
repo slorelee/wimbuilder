@@ -181,16 +181,16 @@ if "x%PB_STRAIGHT_MODE%"=="x" pause
 call :CLEANUP 0
 call WIM_Exporter.bat "%PB_PE_WIM%"
 if not "%GetLastError%"=="0" goto :ERROR_EXPORT
-if "x%PB_STRAIGHT_MODE%"=="x" pause
 echo.
 call :techo "PHRASE:build bootable ISO file"
+if "x%PB_STRAIGHT_MODE%"=="x" pause
 call MakeBootISO.bat
 goto :EOF
 
 :ERROR_EXPORT
- call :techo "Export build WIM failed."
- pause
- goto :EOF
+call :techo "Export build WIM failed."
+pause
+goto :EOF
 
 rem =========================================================
 :PB_APPLY_PACKAGE
@@ -355,6 +355,8 @@ call :LOG "Please specify the @s in config.ini" %1
 call :CLEANUP
 
 :CLEANUP
+if "x%PB_REG_LOADED%"=="x1" call PERegPorter.bat UNLOAD 1>nul
+
 if not "x%src_wim_mounted%"=="x" (
     call WIM_UnMounter.bat "%PB_MNT_DIR%\SOURCES" /discard src_wim_mounted
 )
