@@ -234,15 +234,53 @@ call :techo "PROCESS:delete files"
 if not exist "%~1\KEEP_ITEMS.txt" goto :DEAL_DEL_DIRS
 if exist "X:\[KEEP_ITEMS]" rd /s /q "X:\[KEEP_ITEMS]"
 
-for /f "delims=" %%f in ('cscript.exe //nologo %~dp0bin\KeepItemsName.vbs "%~1\KEEP_ITEMS.txt"') do (
+for /f "eol=; delims=" %%f in (%~1\KEEP_ITEMS.txt) do (
+  set "KEEP_PATH=%%~f"
+  goto :DEAL_KEEP_ITEMS_EX
+)
+
+:DEAL_KEEP_ITEMS_EX
+set KIN_SCRIPT=KeepItemsName.vbs
+set KEEP_ITEMS_FILE=KEEP_ITEMS.txt
+if /i "x%KEEP_PATH%"=="xWindows\WinSxS" set KIN_SCRIPT=KeepItemsNameEx.vbs
+if /i "x%KEEP_PATH%"=="xWindows\System32\CatRoot" set KIN_SCRIPT=KeepItemsNameEx.vbs
+if not "x%KIN_SCRIPT%"=="xKeepItemsNameEx.vbs" goto :DEAL_KEEP_ITEMS
+
+set KEEP_ITEMS_FILE=KEEP_ITEMS_EX.txt
+set KEEP_PATH=%KEEP_PATH%\
+(echo %KEEP_PATH%)>"%~1\KEEP_ITEMS_EX.txt"
+for /f "eol=; skip=1 delims=" %%f in (%~1\KEEP_ITEMS.txt) do (
+  if /i "%%f"=="+Manifests" (
+    (echo %%f)>>"%~1\KEEP_ITEMS_EX.txt"
+  ) else (
+    call :CREATE_ITEMS_EX "%%~f" "%~1\KEEP_ITEMS_EX.txt"
+  )
+)
+
+goto :DEAL_KEEP_ITEMS
+
+:CREATE_ITEMS_EX
+set "KEEP_FILE_NAME=%~1"
+if "x%KEEP_FILE_NAME:~0, 1%"=="x=" (
+  (echo %~1)>>"%~2"
+) else (
+  dir /b "X:\%KEEP_PATH%%~1" >>"%~2"
+)
+set KEEP_FILE_NAME=
+goto :EOF
+
+:DEAL_KEEP_ITEMS
+for /f "delims=" %%f in ('cscript.exe //nologo %~dp0bin\%KIN_SCRIPT% "%~1\%KEEP_ITEMS_FILE%"') do (
   xcopy /Q /H /K /Y %%f 1>nul
 )
-for /f "eol=; delims=" %%f in (%~1\KEEP_ITEMS.txt) do (
-  rd /s /q "X:\%%~f"
-  xcopy /E /Q /H /K /Y "X:\[KEEP_ITEMS]" "X:\%%~f"
-  rd /s /q "X:\[KEEP_ITEMS]"
-  goto :DEAL_DEL_DIRS
-)
+rem if exist "%~1\KEEP_ITEMS_EX.txt" del /q "%~1\KEEP_ITEMS_EX.txt"
+set KEEP_ITEMS_FILE=
+set KIN_SCRIPT=
+
+rd /s /q "X:\%KEEP_PATH%"
+xcopy /E /Q /H /K /Y "X:\[KEEP_ITEMS]" "X:\%KEEP_PATH%"
+rd /s /q "X:\[KEEP_ITEMS]"
+set KEEP_PATH=
 
 :DEAL_DEL_DIRS
 if exist "%~1\DEL_DIRS.txt" (
