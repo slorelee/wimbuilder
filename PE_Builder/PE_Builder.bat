@@ -338,7 +338,7 @@ if not "x%DEBUG_MODE%"=="x" echo %*
 set i18n.str=
 set i18n.log=
 if "%I18N_LCID%"=="0" (
-  if not "x%~1"=="xLOG" (
+  if /i "x%~1"=="xECHO" (
     if "x%~3"=="x" (
       set "i18n.str=%~2"
       goto :EOF
@@ -357,8 +357,8 @@ set "i18n.log=%i18n.str2%"
 goto :EOF
 
 :techo
-call :i18n.t Echo %*
-Echo %i18n.str%
+call :i18n.t ECHO %*
+echo %i18n.str%
 goto :EOF
 
 :setp
@@ -369,7 +369,7 @@ goto :EOF
 
 :cecho
 call :i18n.t CLR_%*
-Echo %i18n.str% | cmdcolor_x86.exe
+echo %i18n.str% | cmdcolor_x86.exe
 goto :EOF
 
 :LOG

@@ -49,7 +49,7 @@ Sub Trans()
     Dim modestr, mode, colorstr, transstr, f, i, pos
     f = 1
     modestr = WSH.Arguments(0)
-    mode = "Echo"
+    mode = "ECHO"
     colorstr = ""
     If InStr(1, modestr, "LOG") > 0 Then mode = "LOG"
     If InStr(1, modestr, "CLR") = 1 Then
@@ -63,7 +63,7 @@ Sub Trans()
         transstr = Replace(transstr, "@s", WSH.Arguments(i), 1, 1)
     Next
     Select Case mode
-    Case "Echo"
+    Case "ECHO"
         WSH.Echo colorstr & transstr
     Case "LOG"
         WSH.Echo colorstr & transstr

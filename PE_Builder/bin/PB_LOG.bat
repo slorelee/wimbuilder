@@ -12,7 +12,7 @@ if not "x%DEBUG_MODE%"=="x" echo %*
 set i18n.str=
 set i18n.log=
 if "%I18N_LCID%"=="0" (
-  if "x%~2"=="Echo" (
+  if /i "x%~1"=="xECHO" (
     if "x%~3"=="x" (
       set i18n.str=%~2
       goto :EOF
