@@ -278,7 +278,7 @@ set KEEP_ITEMS_FILE=
 set KIN_SCRIPT=
 
 rd /s /q "X:\%KEEP_PATH%"
-xcopy /E /Q /H /K /Y "X:\[KEEP_ITEMS]" "X:\%KEEP_PATH%"
+xcopy /S /E /Q /H /K /Y "X:\[KEEP_ITEMS]" "X:\%KEEP_PATH%"
 rd /s /q "X:\[KEEP_ITEMS]"
 set KEEP_PATH=
 

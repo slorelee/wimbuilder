@@ -40,7 +40,7 @@ Sub OutPrint(KPath)
     FileParentPath = Left(KPath, Pos)
   End If
   If IsDirPath = 1 Then
-    WSH.Echo """" & RootPath & KPath & """ ""X:\" & KPath & "\"""
+    WSH.Echo " /S /E """ & RootPath & KPath & """ ""X:\" & KPath & "\"""
   Else
     WSH.Echo """" & RootPath & KPath & """ ""X:\" & FileParentPath & """"
   End If

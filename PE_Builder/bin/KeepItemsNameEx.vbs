@@ -58,7 +58,7 @@ Sub OutPrint(KPath)
   Dim SubFolderPathWithSlash
   SubFolderPathWithSlash = ""
   If IsDirPath = 1 Then
-    WSH.Echo """X:\" & RootPath & KPath & """ ""X:\[KEEP_ITEMS]\" & KPath & "\"""
+    WSH.Echo " /S /E ""X:\" & RootPath & KPath & """ ""X:\[KEEP_ITEMS]\" & KPath & "\"""
     If AddSameNameManifests Then
       WSH.Echo """X:\" & RootPath & "Manifests\" & KPath & ".manifest"" " & _
                         """X:\[KEEP_ITEMS]\" & "Manifests\"""
