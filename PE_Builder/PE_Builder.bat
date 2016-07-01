@@ -96,10 +96,10 @@ call :CLOG 97:104m "[%BUILD_PROJECT%] --- build information"
 set PB_
 echo.
 
-if 1==0 (
-  rem set src_wim_mounted=1
-  set base_wim_mounted=1
-  goto :PROJECT_BUILDING
+if not "x%PB_CLEANUP_MODE%"=="x" (
+  if not "x%PB_SRC_WIM%"=="x" set src_wim_mounted=1
+  if not "x%PB_BASE_WIM%"=="x" set base_wim_mounted=1
+  rem goto :PROJECT_BUILDING
   call :CLEANUP
   pause
   exit 0
