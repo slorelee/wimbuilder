@@ -4,6 +4,10 @@ t.s "Please select the project[1/2/.../n]:", _
     "请选择构建工程:[1/2/.../n]:"
 t.s " --- build information", _
     " --- 构建信息"
+t.s "PHRASE:Get WIM image INFO", _
+    "工序:获取WIM文件信息"
+t.s "Get WIM image's information failed.", _
+    "获取WIM文件信息失败。"
 t.s "PHRASE:Mount WIM image", _
     "工序:挂载 WIM 映像"
 t.s "Please make the mount dir ", _

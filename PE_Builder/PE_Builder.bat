@@ -105,6 +105,33 @@ if not "x%PB_CLEANUP_MODE%"=="x" (
   exit 0
 )
 
+call :cecho PHRASE "PHRASE:Get WIM image INFO"
+for /f "tokens=1,2 delims=:(" %%i in ('DismX.bat /Get-WimInfo /WimFile:"%PB_BASE_WIM%" /Index:%PB_BASE_INDEX% /English') do (
+  if "%%i"=="Architecture " set PB_PE_ARCH=%%j
+  if "%%i"=="Version " set PB_PE_VER=%%j
+  if "%%i"=="ServicePack Build " set PB_PE_BUIID=%%j
+  if "x!LANG_FLAG!"=="x1" (
+    set PB_PE_LANG=%%i
+    set LANG_FLAG=
+  )
+  if "%%i"=="Languages " set LANG_FLAG=1
+)
+
+if "x%PB_PE_LANG%"=="x" (
+    call :cecho ERROR "Get WIM image's information failed."
+    pause
+    goto :EOF
+)
+
+set "PB_PE_ARCH=%PB_PE_ARCH: =%"
+set "PB_PE_VER=%PB_PE_VER: =%"
+set "PB_PE_BUIID=%PB_PE_BUIID: =%"
+rem here is TAB, not SPACE 
+set "PB_PE_LANG=%PB_PE_LANG:	=%"
+set "PB_PE_LANG=%PB_PE_LANG: =%"
+
+set PB_PE_
+echo.
 call :cecho PHRASE "PHRASE:Mount WIM image"
 if "x%PB_STRAIGHT_MODE%"=="x" pause
 
