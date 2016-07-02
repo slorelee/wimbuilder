@@ -291,14 +291,14 @@ set "KEEP_FILE_NAME=%~1"
 if "x%KEEP_FILE_NAME:~0, 1%"=="x=" (
   (echo %~1)>>"%~2"
 ) else (
-  dir /b "X:\%KEEP_PATH%%~1" >>"%~2"
+  call dir /b "X:\%KEEP_PATH%%~1" >>"%~2"
 )
 set KEEP_FILE_NAME=
 goto :EOF
 
 :DEAL_KEEP_ITEMS
 for /f "delims=" %%f in ('cscript.exe //nologo %~dp0bin\%KIN_SCRIPT% "%~1\%KEEP_ITEMS_FILE%"') do (
-  xcopy /Q /H /K /Y %%f 1>nul
+  call xcopy /Q /H /K /Y %%f 1>nul
 )
 rem if exist "%~1\KEEP_ITEMS_EX.txt" del /q "%~1\KEEP_ITEMS_EX.txt"
 set KEEP_ITEMS_FILE=
@@ -311,10 +311,10 @@ set KEEP_PATH=
 
 :DEAL_DEL_DIRS
 if exist "%~1\DEL_DIRS.txt" (
-  for /f "eol=; delims=" %%f in (%~1\DEL_DIRS.txt) do rd /s /q "X:\%%~f" 1>nul
+  for /f "eol=; delims=" %%f in (%~1\DEL_DIRS.txt) do call rd /s /q "X:\%%~f" 1>nul
 )
 if exist "%~1\DEL_FILES.txt" (
-  for /f "eol=; delims=" %%f in (%~1\DEL_FILES.txt) do del /q "X:\%%~f" 1>nul
+  for /f "eol=; delims=" %%f in (%~1\DEL_FILES.txt) do call del /q "X:\%%~f" 1>nul
 )
 
 :DEAL_ADD_FILES
@@ -327,7 +327,7 @@ if %TMP_SKIP_FLAG% EQU 1 goto :DEAL_REG_FILES
 call :techo "PROCESS:add files"
 if not exist "%~1\ADD_ITEMS.txt" goto :DEAL_X_DIR
 for /f "delims=" %%f in ('cscript.exe //nologo %~dp0bin\AddItemsName.vbs "%~1\ADD_ITEMS.txt" "%PB_MNT_DIR%\SOURCES\"') do (
-  xcopy /Q /H /K /Y %%f 1>nul
+  call xcopy /Q /H /K /Y %%f 1>nul
 )
 
 :DEAL_X_DIR
