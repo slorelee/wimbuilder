@@ -429,10 +429,10 @@ if not "x%src_wim_mounted%"=="x" (
 set UNMNT_OPT=/discard
 if "x%1"=="x0" (
   rem cleanup REGISTRY log files
-  del /f /q /a X:Windows\System32\config\*.LOG*
-  del /f /q /a X:Windows\System32\config\*{*}*
-  del /f /q /a X:Windows\System32\SMI\Store\Machine\*.LOG*
-  del /f /q /a X:Windows\System32\SMI\Store\Machine\*{*}*
+  del /f /q /a X:Windows\System32\config\*.LOG* 1>nul 2>nul
+  del /f /q /a X:Windows\System32\config\*{*}* 1>nul 2>nul
+  del /f /q /a X:Windows\System32\SMI\Store\Machine\*.LOG* 1>nul 2>nul
+  del /f /q /a X:Windows\System32\SMI\Store\Machine\*{*}* 1>nul 2>nul
   set UNMNT_OPT=/commit
 )
 if not "x%base_wim_mounted%"=="x" (
