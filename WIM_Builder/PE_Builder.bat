@@ -226,12 +226,14 @@ if "x%~1"=="x" goto :EOF
 if not "%PROCESS_PROJECT%"=="1" goto :EOF
 echo APPLYING-PACKAGE:%1
 if "x%PB_STRAIGHT_MODE%"=="x" pause
+pushd "%~1"
 call :PB_PROCESS "%~1"
 for /f "delims=" %%s in ('dir /b /ad "%~1"') do (
   if not "x%%s"=="xX" (
     call :PB_APPLY_PATCH %%s
   )
 )
+popd
 goto :EOF
 
 :PB_APPLY_PATCH
