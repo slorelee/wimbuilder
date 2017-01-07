@@ -35,30 +35,32 @@ outStream.Close
 
 
 Function RegKeyTrans(str)
-  Dim transFlag
+  Dim doneFlag
+  Dim preMark
   RegKeyTrans = str
-  If str = "" Then Exit Function
-  RegKeyTrans = RegKeyRePlacer(transFlag, str, "[HKEY_CLASSES_ROOT\", "[HKEY_LOCAL_MACHINE\PE_SOFTWARE\Classes\")
-  If transFlag = 1 Then Exit Function
-  RegKeyTrans = RegKeyRePlacer(transFlag, str, "[HKEY_CURRENT_USER\", "[HKEY_LOCAL_MACHINE\PE_DEFAULT\")    '[HKEY_LOCAL_MACHINE\PE_NTUSER.DAT\"
-  If transFlag = 1 Then Exit Function
-  RegKeyTrans = RegKeyRePlacer(transFlag, str, "[HKEY_LOCAL_MACHINE\SAM\", "[HKEY_LOCAL_MACHINE\PE_SAM\")
-  If transFlag = 1 Then Exit Function
-  RegKeyTrans = RegKeyRePlacer(transFlag, str, "[HKEY_LOCAL_MACHINE\SECURITY\", "[HKEY_LOCAL_MACHINE\PE_SECURITY\")
-  If transFlag = 1 Then Exit Function
-  RegKeyTrans = RegKeyRePlacer(transFlag, str, "[HKEY_LOCAL_MACHINE\SOFTWARE\", "[HKEY_LOCAL_MACHINE\PE_SOFTWARE\")
-  If transFlag = 1 Then Exit Function
-  RegKeyTrans = RegKeyRePlacer(transFlag, str, "[HKEY_LOCAL_MACHINE\SYSTEM\", "[HKEY_LOCAL_MACHINE\PE_SYSTEM\")
-  If transFlag = 1 Then Exit Function
-  RegKeyTrans = RegKeyRePlacer(transFlag, str, "[HKEY_USERS\.DEFAULT\", "[HKEY_LOCAL_MACHINE\PE_DEFAULT\")
-  If transFlag = 1 Then Exit Function
+  preMark = "["
+  If Left(str, 2) = "[-" Then preMark = "[-"
+  RegKeyTrans = RegKeyRePlacer(doneFlag, str, preMark, "HKEY_CLASSES_ROOT\", "HKEY_LOCAL_MACHINE\PE_SOFTWARE\Classes\")
+  If doneFlag = 1 Then Exit Function
+  RegKeyTrans = RegKeyRePlacer(doneFlag, str, preMark, "HKEY_CURRENT_USER\", "HKEY_LOCAL_MACHINE\PE_DEFAULT\")    'HKEY_LOCAL_MACHINE\PE_NTUSER.DAT\"
+  If doneFlag = 1 Then Exit Function
+  RegKeyTrans = RegKeyRePlacer(doneFlag, str, preMark, "HKEY_LOCAL_MACHINE\SAM\", "HKEY_LOCAL_MACHINE\PE_SAM\")
+  If doneFlag = 1 Then Exit Function
+  RegKeyTrans = RegKeyRePlacer(doneFlag, str, preMark, "HKEY_LOCAL_MACHINE\SECURITY\", "HKEY_LOCAL_MACHINE\PE_SECURITY\")
+  If doneFlag = 1 Then Exit Function
+  RegKeyTrans = RegKeyRePlacer(doneFlag, str, preMark, "HKEY_LOCAL_MACHINE\SOFTWARE\", "HKEY_LOCAL_MACHINE\PE_SOFTWARE\")
+  If doneFlag = 1 Then Exit Function
+  RegKeyTrans = RegKeyRePlacer(doneFlag, str, preMark, "HKEY_LOCAL_MACHINE\SYSTEM\", "HKEY_LOCAL_MACHINE\PE_SYSTEM\")
+  If doneFlag = 1 Then Exit Function
+  RegKeyTrans = RegKeyRePlacer(doneFlag, str, preMark, "HKEY_USERS\.DEFAULT\", "HKEY_LOCAL_MACHINE\PE_DEFAULT\")
+  If doneFlag = 1 Then Exit Function
 End Function
 
-Function RegKeyRePlacer(transFlag, str, okey, nkey)
+Function RegKeyRePlacer(doneFlag, str, preMark, okey, nkey)
   RegKeyRePlacer = str
-  transFlag = 0
-  If InStr(1, str, okey) = 1 Then
-    RegKeyRePlacer = Replace(str, okey, nkey, 1, 1)
-    transFlag = 1
+  doneFlag = 0
+  If InStr(1, str, preMark + okey) = 1 Then
+    RegKeyRePlacer = Replace(str, preMark + okey, preMark + nkey, 1, 1)
+    doneFlag = 1
   End If
 End Function
