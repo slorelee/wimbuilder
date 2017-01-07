@@ -316,7 +316,7 @@ if exist "%~1\DEL_DIRS.txt" (
   for /f "eol=; delims=" %%f in (%~1\DEL_DIRS.txt) do call rd /s /q "X:\%%~f" 1>nul
 )
 if exist "%~1\DEL_FILES.txt" (
-  for /f "eol=; delims=" %%f in (%~1\DEL_FILES.txt) do call del /q "X:\%%~f" 1>nul
+  for /f "eol=; delims=" %%f in (%~1\DEL_FILES.txt) do call del /f /q "X:\%%~f" 1>nul
 )
 
 :DEAL_ADD_FILES
