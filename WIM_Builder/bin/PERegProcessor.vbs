@@ -40,7 +40,7 @@ Function RegKeyTrans(str)
   If str = "" Then Exit Function
   RegKeyTrans = RegKeyRePlacer(transFlag, str, "[HKEY_CLASSES_ROOT\", "[HKEY_LOCAL_MACHINE\PE_SOFTWARE\Classes\")
   If transFlag = 1 Then Exit Function
-  RegKeyTrans = RegKeyRePlacer(transFlag, str, "[HKEY_CURRENT_USER\", "[HKEY_LOCAL_MACHINE\PE_NTUSER.DAT\")
+  RegKeyTrans = RegKeyRePlacer(transFlag, str, "[HKEY_CURRENT_USER\", "[HKEY_LOCAL_MACHINE\PE_DEFAULT\")    '[HKEY_LOCAL_MACHINE\PE_NTUSER.DAT\"
   If transFlag = 1 Then Exit Function
   RegKeyTrans = RegKeyRePlacer(transFlag, str, "[HKEY_LOCAL_MACHINE\SAM\", "[HKEY_LOCAL_MACHINE\PE_SAM\")
   If transFlag = 1 Then Exit Function
