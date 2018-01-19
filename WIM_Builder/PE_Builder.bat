@@ -196,9 +196,7 @@ if "x%PB_STRAIGHT_MODE%"=="x" pause
 set PROCESS_PROJECT=1
 call :PB_PROCESS .
 for /f "delims=" %%s in ('dir /b /ad .') do (
-  if not "x%%s"=="xX" (
-    call :PB_APPLY_PATCH %%s
-  )
+    call :PB_PATCH_FITER %%s
 )
 
 popd
@@ -229,11 +227,17 @@ if "x%PB_STRAIGHT_MODE%"=="x" pause
 pushd "%~1"
 call :PB_PROCESS "%~1"
 for /f "delims=" %%s in ('dir /b /ad "%~1"') do (
-  if not "x%%s"=="xX" (
-    call :PB_APPLY_PATCH %%s
-  )
+    call :PB_PATCH_FITER %%s
 )
 popd
+goto :EOF
+
+:PB_PATCH_FITER
+if /i "x%1"=="xX" goto :EOF
+if /i "x%1"=="xWindows" goto :EOF
+if /i "x%1"=="xSystem32" goto :EOF
+if /i "x%1"=="xDesktop" goto :EOF
+call :PB_APPLY_PATCH %1
 goto :EOF
 
 :PB_APPLY_PATCH
@@ -324,6 +328,9 @@ rem PROCESS:add files
 set TMP_SKIP_FLAG=1
 if exist "%~1\ADD_ITEMS.txt" set TMP_SKIP_FLAG=0
 if exist "%~1\X" set TMP_SKIP_FLAG=0
+if exist "%~1\Windows" set TMP_SKIP_FLAG=0
+if exist "%~1\System32" set TMP_SKIP_FLAG=0
+if exist "%~1\Desktop" set TMP_SKIP_FLAG=0
 if %TMP_SKIP_FLAG% EQU 1 goto :DEAL_REG_FILES
 
 call :techo "PROCESS:add files"
@@ -336,6 +343,22 @@ for /f "delims=" %%f in ('cscript.exe //nologo %~dp0bin\AddItemsName.vbs "%~1\AD
 if exist "%~1\X" (
   xcopy /E /Q /H /K /Y "%~1\X\*" X:\
 )
+
+:DEAL_WINDOWS_DIR
+if exist "%~1\Windows" (
+  xcopy /E /Q /H /K /Y "%~1\Windows\*" X:\Windows
+)
+
+:DEAL_SYSTEM32_DIR
+if exist "%~1\System32" (
+  xcopy /E /Q /H /K /Y "%~1\System32\*" X:\Windows\System32
+)
+
+:DEAL_DESKTOP_DIR
+if exist "%~1\Desktop" (
+  xcopy /E /Q /H /K /Y "%~1\Desktop\*" X:\Users\Default\Desktop
+)
+
 
 :DEAL_REG_FILES
 rem PROCESS:import reg files

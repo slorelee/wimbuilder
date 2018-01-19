@@ -2,6 +2,7 @@
 cd /d "%~dp0"
 
 set PB_CLEANUP_MODE=TRUE
+set PB_REG_LOADED=1
 
 rem run with Administrators right
 bin\IsAdmin_x86.exe
